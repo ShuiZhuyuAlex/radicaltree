@@ -1,0 +1,189 @@
+<html>
+  <head>
+        <meta charset="utf-8">
+        <title>Radical Tree Plot</title>
+<style>
+
+.node circle {
+  fill: steelblue;
+  stroke: steelblue;
+  stroke-width: 1.5px;
+}
+
+.node circlehover{
+  fill: steelblue;
+  stroke: steelblue;
+  stroke-width: 2.5px;
+}
+
+.node {
+  font: 12px sans-serif;
+}
+
+.link {
+  fill: none;
+  stroke: #CCC;
+  stroke-width: 2.5px;
+  opacity: .7
+}
+
+#tooltip {
+  position: absolute;
+  text-align: center;
+  padding: 20px;
+  margin: 10px;
+  font: 12px sans-serif;
+  background: lightsteelblue;
+  border: 1px;
+  border-radius: 2px;
+  pointer-events: none;
+}
+
+#tooltip h4{
+  margin:0;
+  font-size:14px;
+}
+
+#tooltip{
+  background:white;
+  border:1px solid grey;
+  border-radius:5px;
+  font-size:12px;
+  width:auto;
+  padding:4px;
+  color:white;
+  opacity:0;
+}
+
+#tooltip table{
+  table-layout:fixed;
+}
+
+#tooltip tr td{
+  padding:0;
+  margin:0;
+}
+
+#tooltip tr td:nth-child(1){
+  width:50px;
+}
+
+#tooltip tr td:nth-child(2){
+  text-align:center;
+}
+
+</style>
+  </head>
+<body>
+  <div id="tooltip"></div>
+      <script src="http://d3js.org/d3.v3.min.js"></script>
+      <script src="https://code.jquery.com/jquery-3.3.1.min.js"></script>
+      <script>
+
+      var diameter = 2000;
+
+      var tree = d3.layout.tree()
+          .size([360, diameter / 2 - 190])
+          .separation(function(a, b) { return (a.parent == b.parent ? 1 : 2) / a.depth; });
+
+      var diagonal = d3.svg.diagonal.radial()
+          .projection(function(d) { return [d.y, d.x / 180 * Math.PI]; });
+
+      var svg = d3.select("body").append("svg")
+          .attr("width", diameter + 20)
+          .attr("height", diameter + 20)
+          .style({"background":"#FFFFFC"})
+        .append("g")
+          .attr("transform", "translate(" + diameter / 2 + "," + diameter / 2 + ")");
+
+      function tooltipHtml(d){	/* function to create html content string in tooltip div. */
+        return "<table>"+
+          "<tr><td>B117</td><td>"+(d.value[0])+"</td></tr>"+
+          "<tr><td>Cyclic</td><td>"+(d.value[1])+"</td></tr>"+
+          "</table>";
+      }
+
+      var data = '{{variable|tojson}}';
+      root = JSON.parse(data)
+      var nodes = tree.nodes(root);
+      var links = tree.links(nodes);
+
+      var link = svg.selectAll(".link")
+        .data(links)
+        .enter()
+        .append("path")
+        .attr("class", "link")
+        .attr("d", diagonal);
+
+      var node = svg.selectAll(".node")
+        .data(nodes)
+        .enter()
+        .append("g")
+        .attr("class", "node")
+        .attr("transform", function(d) { return "rotate(" + (d.x - 90) + ")translate(" + d.y + ")"; })
+        .on("mouseover", function(d){
+          d3.selectAll(".node").select("circle").style({"fill":"#666666",
+                                                        "stroke": "#666666",
+                                                        "stroke-width": "1.5px",
+                                                        "opacity": .6})
+          d3.selectAll(".node").select("text").style({"fill":"#666666","opacity": .6})
+          cur = d3.select(this)
+          text = cur.select("text")
+          text.style({"fill":"green", "font-size": "15px","opacity": "1","font-weight":"bold"})
+          text.text(function(d){
+            text = d.name + " " + d.value[0] + "/" + d.value[2]
+            return text
+          })
+          circle = cur.select("circle")
+          circle.attr("r", 8.5)
+          circle.style({"fill":"green","stroke": "black","stroke-width": "1.5px","opacity": "1"})
+          d3.select("#tooltip").transition().duration(200).style("opacity", .9);
+          d3.select("#tooltip").html(tooltipHtml(d))
+            .style("left", (d3.event.pageX) + "px")
+            .style("top", (d3.event.pageY - 28) + "px");
+        })
+        .on("mouseout", function(d){
+          d3.select("#tooltip").transition().duration(200).style("opacity", 0);
+          d3.selectAll(".node").select("circle").style({"fill":"steelblue",
+                                                        "stroke": "steelblue",
+                                                        "stroke-width": "1.5px",
+                                                        "opacity": "1"})
+          d3.selectAll(".node").select("text").style({"fill":"black","opacity": "1"})
+          cur = d3.select(this)
+          circle = cur.select("circle")
+          circle.attr("r", 4.5)
+          circle.style({"fill": "steelblue",
+                        "stroke": "steelblue",
+                        "stroke-width": "1.5px",
+                        "opacity": "1"})
+          text = d3.select(this).select("text")
+          text.style({"fill":"black", "font-size":"12px","font-weight":"normal"})
+          text.text(function(d){
+            text = d.name
+            return text
+          })
+        })
+
+      node.append("circle")
+        .attr("r", 4.5)
+        .style({"fill":"steelblue",
+                "stroke": "steelblue",
+                "stroke": "1.5px"})
+
+      var text = node.append("text")
+        .attr("text-anchor", function(d) { return d.x < 180 ? "start" : "end"; })
+        .attr("transform", function(d) { return d.x < 180 ? "translate(8)" : "rotate(180)translate(-8)"; })
+        .style({"fill":"black", "font-size":"12px","font-weight":"normal"})
+        .text(function(d) {
+          if(d.children){
+            text = d.name + " (" + d.value[2] + ")"
+            return text
+          }else{
+            text = d.name + "(" + d.value[2] + ")"
+            return text
+          }
+        });
+      </script>
+
+    </body>
+</html>
