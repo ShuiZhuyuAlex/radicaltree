@@ -159,12 +159,13 @@
           text = d3.select(this).select("text")
           text.style({"fill":"black", "font-size":"12px","font-weight":"normal"})
           text.text(function(d){
+            if(d.children){
             text = d.name + " (" + d.value[2] + ")"
             return text
           }else{
             text = d.name + "(" + d.value[2] + ")"
             return text
-            }
+          }
           })
         })
 
