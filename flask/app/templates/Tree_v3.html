@@ -89,7 +89,7 @@
           .attr("transform", "translate(" + diameter / 2 + "," + diameter / 2 + ")");
 
       var over = 0;
-      var circleradius = [3, 7];
+      var circleradius = [3, 6];
       var circlecolor = ["0000FF", "FF0000", "00CC00", "FF6600", "663300", "000000"];
 
       function tooltipHtml(d){	/* function to create html content string in tooltip div. */
@@ -205,7 +205,8 @@
                                      .style({"fill": (flag==1)?circlecolor[depth] : "C0C0C0",
                                              "stroke": (flag==1)?circlecolor[depth] : "C0C0C0",
                                              "stroke": "1.5px"});
-        d3.select(d).select("text").style({"font-size": (flag==1)? "14px" : "10px",
+        d3.select(d).select("text").style({"font-size": (flag==1)? "12px" : "8px",
+                                           "fill": (flag==1)?circlecolor[depth] : "C0C0C0",
                                            "opacity": (flag==1)? 1 : .5,
                                            "font-weight": (flag==1)? "bold" : "normal"})
                                    .text(function(d) {
