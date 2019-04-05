@@ -118,7 +118,6 @@
         .append("g")
         .attr("class", "node")
         .attr("transform", function(d) { return "rotate(" + (d.x - 90) + ")translate(" + d.y + ")"; })
-<<<<<<< HEAD
         .on("mouseover", mouseover)
         .on("mouseout", mouseout);
 
@@ -235,73 +234,6 @@
           else{
             highlight(d);
             // d3.select(d).data()[0].y = (d3.select(d).data()[0].depth * (maxLabelLength * 50));
-=======
-        .on("mouseover", function(d){
-          d3.selectAll(".node").select("circle").style({"fill":"#666666",
-                                                        "stroke": "#666666",
-                                                        "stroke-width": "1.5px",
-                                                        "opacity": .6})
-          d3.selectAll(".node").select("text").style({"fill":"#666666","opacity": .6})
-          cur = d3.select(this)
-          text = cur.select("text")
-          text.style({"fill":"green", "font-size": "15px","opacity": "1","font-weight":"bold"})
-          text.text(function(d){
-            text = d.name + " " + d.value[0] + "/" + d.value[2]
-            return text
-          })
-          circle = cur.select("circle")
-          circle.attr("r", 8.5)
-          circle.style({"fill":"green","stroke": "black","stroke-width": "1.5px","opacity": "1"})
-          d3.select("#tooltip").transition().duration(200).style("opacity", .9);
-          d3.select("#tooltip").html(tooltipHtml(d))
-            .style("left", (d3.event.pageX) + "px")
-            .style("top", (d3.event.pageY - 28) + "px");
-        })
-        .on("mouseout", function(d){
-          d3.select("#tooltip").transition().duration(200).style("opacity", 0);
-          d3.selectAll(".node").select("circle").style({"fill":"steelblue",
-                                                        "stroke": "steelblue",
-                                                        "stroke-width": "1.5px",
-                                                        "opacity": "1"})
-          d3.selectAll(".node").select("text").style({"fill":"black","opacity": "1"})
-          cur = d3.select(this)
-          circle = cur.select("circle")
-          circle.attr("r", 4.5)
-          circle.style({"fill": "steelblue",
-                        "stroke": "steelblue",
-                        "stroke-width": "1.5px",
-                        "opacity": "1"})
-          text = d3.select(this).select("text")
-          text.style({"fill":"black", "font-size":"12px","font-weight":"normal"})
-          text.text(function(d){
-            if(d.children){
-            text = d.name + " (" + d.value[2] + ")"
-            return text
-          }else{
-            text = d.name + "(" + d.value[2] + ")"
-            return text
-          }
-          })
-        })
-
-      node.append("circle")
-        .attr("r", 4.5)
-        .style({"fill":"steelblue",
-                "stroke": "steelblue",
-                "stroke": "1.5px"})
-
-      var text = node.append("text")
-        .attr("text-anchor", function(d) { return d.x < 180 ? "start" : "end"; })
-        .attr("transform", function(d) { return d.x < 180 ? "translate(8)" : "rotate(180)translate(-8)"; })
-        .style({"fill":"black", "font-size":"12px","font-weight":"normal"})
-        .text(function(d) {
-          if(d.children){
-            text = d.name + " (" + d.value[2] + ")"
-            return text
-          }else{
-            text = d.name + "(" + d.value[2] + ")"
-            return text
->>>>>>> 662905ff85a16a589d981a83f44292aff68f37eb
           }
         });
         // node.attr("transform", function(d) { return "rotate(" + (d.x - 90) + ")translate(" + d.y + ")"; })
