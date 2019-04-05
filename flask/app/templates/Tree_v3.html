@@ -211,7 +211,7 @@
                                            "font-weight": (flag==1)? "bold" : "normal"})
                                    .text(function(d) {
                                      if(flag==1){
-                                       text = d.name + " " + d.value[4] + "/" + d.value[5]
+                                       text = d.name + "(" + d.value[4] + "/" + d.value[5] + ")";
                                        return text
                                      }else{
                                        text = d.name + "(" + d.value[4] + ")";
